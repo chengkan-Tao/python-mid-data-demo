@@ -9,6 +9,11 @@ IN_PATH_DALLAS_WEATHER = os.path.join('weather','dallas','2010_2020_dallas.csv')
 IN_PATH_HOUSTON_WEATHER = os.path.join('weather','houston','2010_2020_houston.csv')
 IN_PATH_LOS_ANGELES_WEATHER = os.path.join('weather','los_angeles','2010_2020_los_angeles.csv')
 IN_PATH_NEW_YORK_WEATHER = os.path.join('weather','new_york','2010_2020_new_york.csv')
+AUSTIN_WEATHER_URL = 'https://www.ncei.noaa.gov/orders/cdo/2909277.csv'
+DALLAS_WEATHER_URL = 'https://www.ncei.noaa.gov/orders/cdo/2905654.csv'
+HOUSTON_WEATHER_URL = 'https://www.ncei.noaa.gov/orders/cdo/2905669.csv'
+LOS_ANGELES_WEATHER_URL = 'https://www.ncei.noaa.gov/orders/cdo/2905675.csv'
+NEW_YORK_WEATHER_URL = 'https://www.ncei.noaa.gov/orders/cdo/2905680.csv'
 IN_PATH_AUSTIN_PM25_2020 = os.path.join('air_pollution','austin','pm25','austin_2020_pm25.csv')
 IN_PATH_AUSTIN_PM25_2019 = os.path.join('air_pollution','austin','pm25','austin_2019_pm25.csv')
 IN_PATH_AUSTIN_PM25_2018 = os.path.join('air_pollution','austin','pm25','austin_2018_pm25.csv')
@@ -387,12 +392,19 @@ def cleanweatherdataaustin(IN_PATH):
     #weatherdata['CITY']='AUSTIN'
     return weatherdata
 
+#read from url
+austin_weather = cleanweatherdataaustin(AUSTIN_WEATHER_URL)
+dallas_weather = cleanweatherdataaustin(DALLAS_WEATHER_URL)
+houston_weather = cleanweatherdataaustin(HOUSTON_WEATHER_URL)
+los_angeles_weather = cleanweatherdataaustin(LOS_ANGELES_WEATHER_URL)
+new_york_weather = cleanweatherdataaustin(NEW_YORK_WEATHER_URL)
 
-austin_weather = cleanweatherdataaustin(IN_PATH_AUSTIN_WEATHER)
-dallas_weather = cleanweatherdataaustin(IN_PATH_DALLAS_WEATHER)
-houston_weather = cleanweatherdataaustin(IN_PATH_HOUSTON_WEATHER)
-los_angeles_weather = cleanweatherdataaustin(IN_PATH_LOS_ANGELES_WEATHER)
-new_york_weather = cleanweatherdataaustin(IN_PATH_NEW_YORK_WEATHER)
+#read from csv
+# austin_weather = cleanweatherdataaustin(IN_PATH_AUSTIN_WEATHER)
+# dallas_weather = cleanweatherdataaustin(IN_PATH_DALLAS_WEATHER)
+# houston_weather = cleanweatherdataaustin(IN_PATH_HOUSTON_WEATHER)
+# los_angeles_weather = cleanweatherdataaustin(IN_PATH_LOS_ANGELES_WEATHER)
+# new_york_weather = cleanweatherdataaustin(IN_PATH_NEW_YORK_WEATHER)
 
 
 def citypm25(city_pm25_data):
@@ -697,7 +709,7 @@ new_yorkno2=pd.concat(frames_new_york_no2,join='outer')
 #print("New York NO2 2010-2020")
 #print(new_yorkno2)
 
-print(max(len(austinno2),len(austinpm10),len(austinpm25)))
+
 def citymergeairpollution(pm25data, pm10data, no2data):
     cityairpollution = pd.merge(pm25data, pm10data, how='outer', left_index=True, right_index=True)
     cityairpollution = pd.merge(cityairpollution, no2data, how='outer', left_index=True, right_index=True)
