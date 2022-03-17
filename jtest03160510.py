@@ -384,20 +384,20 @@ new_york_no2_2011 = pd.read_csv(IN_PATH_NEW_YORK_NO2_2011)
 new_york_no2_2010 = pd.read_csv(IN_PATH_NEW_YORK_NO2_2010)
 
 
-def cleanweatherdataaustin(IN_PATH):
-    weatherdata = (pd.read_csv(IN_PATH))
-    weatherdata.set_index(pd.DatetimeIndex(weatherdata['DATE']),inplace=True)   
-    weatherdata.drop(['DATE','STATION','NAME'],axis=1,inplace=True)
-    weatherdata.fillna(0,inplace = True)
-    #weatherdata['CITY']='AUSTIN'
-    return weatherdata
+def clean_weather_data_city(IN_PATH):
+    city_weather_data = (pd.read_csv(IN_PATH))
+    city_weather_data.set_index(pd.DatetimeIndex(city_weather_data['DATE']),inplace=True)   
+    city_weather_data.drop(['DATE','STATION','NAME'],axis=1,inplace=True)
+    #city_weather_data.columns[14:]=city_weather_data.columns[14:].fillna(0，inplace = True)
+    city_weather_data.iloc[:,14:].fillna(0, inplace = True)
+    return city_weather_data
 
 #read from url
-austin_weather = cleanweatherdataaustin(AUSTIN_WEATHER_URL)
-dallas_weather = cleanweatherdataaustin(DALLAS_WEATHER_URL)
-houston_weather = cleanweatherdataaustin(HOUSTON_WEATHER_URL)
-los_angeles_weather = cleanweatherdataaustin(LOS_ANGELES_WEATHER_URL)
-new_york_weather = cleanweatherdataaustin(NEW_YORK_WEATHER_URL)
+austin_weather = clean_weather_data_city(AUSTIN_WEATHER_URL)
+dallas_weather = clean_weather_data_city(DALLAS_WEATHER_URL)
+houston_weather = clean_weather_data_city(HOUSTON_WEATHER_URL)
+los_angeles_weather = clean_weather_data_city(LOS_ANGELES_WEATHER_URL)
+new_york_weather = clean_weather_data_city(IN_PATH_NEW_YORK_WEATHER)
 
 #read from csv
 # austin_weather = cleanweatherdataaustin(IN_PATH_AUSTIN_WEATHER)
@@ -407,81 +407,81 @@ new_york_weather = cleanweatherdataaustin(NEW_YORK_WEATHER_URL)
 # new_york_weather = cleanweatherdataaustin(IN_PATH_NEW_YORK_WEATHER)
 
 
-def citypm25(city_pm25_data):
+def clean_city_pm25(city_pm25_data):
     city_pm25_data['Date']=pd.to_datetime(city_pm25_data['Date'])
     
-    pm25stationdatemean=city_pm25_data.groupby(['Date','Site ID'])['Daily Mean PM2.5 Concentration'].mean()
-    pm25datemean=pm25stationdatemean.groupby('Date').mean().to_frame()
-    pm25aqistationdatemean=city_pm25_data.groupby(['Date','Site ID'])['DAILY_AQI_VALUE'].mean()
-    pm25aqidatemean=pm25aqistationdatemean.groupby('Date').mean().to_frame()
+    pm25_station_date_mean=city_pm25_data.groupby(['Date','Site ID'])['Daily Mean PM2.5 Concentration'].mean()
+    pm25_date_mean=pm25_station_date_mean.groupby('Date').mean().to_frame()
+    pm25_aqi_station_date_mean=city_pm25_data.groupby(['Date','Site ID'])['DAILY_AQI_VALUE'].mean()
+    pm25_aqi_date_mean=pm25_aqi_station_date_mean.groupby('Date').mean().to_frame()
     
-    citypm25data=pd.merge(pm25datemean,pm25aqidatemean,how='outer', left_index=True, right_index=True)
-    citypm25data.columns = ['Daily Mean PM2.5 Concentration', 'DAILY AQI VALUE PM25']
-    return citypm25data
+    city_pm25_data=pd.merge(pm25_date_mean,pm25_aqi_date_mean,how='outer', left_index=True, right_index=True)
+    city_pm25_data.columns = ['Daily Mean PM2.5 Concentration', 'DAILY AQI VALUE PM25']
+    return city_pm25_data
 
-austin2020pm25 = citypm25(austin_pm25_2020)
-austin2019pm25 = citypm25(austin_pm25_2019)
-austin2018pm25 = citypm25(austin_pm25_2018)
-austin2017pm25 = citypm25(austin_pm25_2017)
-austin2016pm25 = citypm25(austin_pm25_2016)
-austin2015pm25 = citypm25(austin_pm25_2015)
-austin2014pm25 = citypm25(austin_pm25_2014)
-austin2013pm25 = citypm25(austin_pm25_2013)
-austin2012pm25 = citypm25(austin_pm25_2012)
-austin2011pm25 = citypm25(austin_pm25_2011)
-austin2010pm25 = citypm25(austin_pm25_2010)
-frames_austin_pm25=[austin2010pm25,austin2011pm25,austin2012pm25,austin2013pm25,austin2014pm25,austin2015pm25,austin2016pm25,austin2017pm25,austin2018pm25,austin2019pm25,austin2020pm25]
-austinpm25=pd.concat(frames_austin_pm25,join='outer')
+austin_2020_pm25 = clean_city_pm25(austin_pm25_2020)
+austin_2019_pm25 = clean_city_pm25(austin_pm25_2019)
+austin_2018_pm25 = clean_city_pm25(austin_pm25_2018)
+austin_2017_pm25 = clean_city_pm25(austin_pm25_2017)
+austin_2016_pm25 = clean_city_pm25(austin_pm25_2016)
+austin_2015_pm25 = clean_city_pm25(austin_pm25_2015)
+austin_2014_pm25 = clean_city_pm25(austin_pm25_2014)
+austin_2013_pm25 = clean_city_pm25(austin_pm25_2013)
+austin_2012_pm25 = clean_city_pm25(austin_pm25_2012)
+austin_2011_pm25 = clean_city_pm25(austin_pm25_2011)
+austin_2010_pm25 = clean_city_pm25(austin_pm25_2010)
+frames_austin_pm25=[austin_2010_pm25,austin_2011_pm25,austin_2012_pm25,austin_2013_pm25,austin_2014_pm25,austin_2015_pm25,austin_2016_pm25,austin_2017_pm25,austin_2018_pm25,austin_2019_pm25,austin_2020_pm25]
+austin_pm25=pd.concat(frames_austin_pm25,join='outer')
 # print("Austin PM2.5 2010-2020")
 # print(austinpm25)
 
 
-houston2020pm25 = citypm25(houston_pm25_2020)
-houston2019pm25 = citypm25(houston_pm25_2019)
-houston2018pm25 = citypm25(houston_pm25_2018)
-houston2017pm25 = citypm25(houston_pm25_2017)
-houston2016pm25 = citypm25(houston_pm25_2016)
-houston2015pm25 = citypm25(houston_pm25_2015)
-houston2014pm25 = citypm25(houston_pm25_2014)
-houston2013pm25 = citypm25(houston_pm25_2013)
-houston2012pm25 = citypm25(houston_pm25_2012)
-houston2011pm25 = citypm25(houston_pm25_2011)
-houston2010pm25 = citypm25(houston_pm25_2010)
-frames_houston_pm25=[houston2010pm25,houston2011pm25,houston2012pm25,houston2013pm25,houston2014pm25,houston2015pm25,houston2016pm25,houston2017pm25,houston2018pm25,houston2019pm25,houston2020pm25]
-houstonpm25=pd.concat(frames_houston_pm25,join='outer')
+houston_2020_pm25 = clean_city_pm25(houston_pm25_2020)
+houston_2019_pm25 = clean_city_pm25(houston_pm25_2019)
+houston_2018_pm25 = clean_city_pm25(houston_pm25_2018)
+houston_2017_pm25 = clean_city_pm25(houston_pm25_2017)
+houston_2016_pm25 = clean_city_pm25(houston_pm25_2016)
+houston_2015_pm25 = clean_city_pm25(houston_pm25_2015)
+houston_2014_pm25 = clean_city_pm25(houston_pm25_2014)
+houston_2013_pm25 = clean_city_pm25(houston_pm25_2013)
+houston_2012_pm25 = clean_city_pm25(houston_pm25_2012)
+houston_2011_pm25 = clean_city_pm25(houston_pm25_2011)
+houston_2010_pm25 = clean_city_pm25(houston_pm25_2010)
+frames_houston_pm25=[houston_2010_pm25,houston_2011_pm25,houston_2012_pm25,houston_2013_pm25,houston_2014_pm25,houston_2015_pm25,houston_2016_pm25,houston_2017_pm25,houston_2018_pm25,houston_2019_pm25,houston_2020_pm25]
+houston_pm25=pd.concat(frames_houston_pm25,join='outer')
 # print("Houston PM2.5 2010-2020")
 # print(houstonpm25)
 
 
 
-dallas2020pm25 = citypm25(dallas_pm25_2020)
-dallas2019pm25 = citypm25(dallas_pm25_2019)
-dallas2018pm25 = citypm25(dallas_pm25_2018)
-dallas2017pm25 = citypm25(dallas_pm25_2017)
-dallas2016pm25 = citypm25(dallas_pm25_2016)
-dallas2015pm25 = citypm25(dallas_pm25_2015)
-dallas2014pm25 = citypm25(dallas_pm25_2014)
-dallas2013pm25 = citypm25(dallas_pm25_2013)
-dallas2012pm25 = citypm25(dallas_pm25_2012)
-dallas2011pm25 = citypm25(dallas_pm25_2011)
-dallas2010pm25 = citypm25(dallas_pm25_2010)
-frames_dallas_pm25=[dallas2010pm25,dallas2011pm25,dallas2012pm25,dallas2013pm25,dallas2014pm25,dallas2015pm25,dallas2016pm25,dallas2017pm25,dallas2018pm25,dallas2019pm25,dallas2020pm25]
-dallaspm25=pd.concat(frames_dallas_pm25,join='outer')
+dallas_2020_pm25 = clean_city_pm25(dallas_pm25_2020)
+dallas_2019_pm25 = clean_city_pm25(dallas_pm25_2019)
+dallas_2018_pm25 = clean_city_pm25(dallas_pm25_2018)
+dallas_2017_pm25 = clean_city_pm25(dallas_pm25_2017)
+dallas_2016_pm25 = clean_city_pm25(dallas_pm25_2016)
+dallas_2015_pm25 = clean_city_pm25(dallas_pm25_2015)
+dallas_2014_pm25 = clean_city_pm25(dallas_pm25_2014)
+dallas_2013_pm25 = clean_city_pm25(dallas_pm25_2013)
+dallas_2012_pm25 = clean_city_pm25(dallas_pm25_2012)
+dallas_2011_pm25 = clean_city_pm25(dallas_pm25_2011)
+dallas_2010_pm25 = clean_city_pm25(dallas_pm25_2010)
+frames_dallas_pm25=[dallas_2010_pm25,dallas_2011_pm25,dallas_2012_pm25,dallas_2013_pm25,dallas_2014_pm25,dallas_2015_pm25,dallas_2016_pm25,dallas_2017_pm25,dallas_2018_pm25,dallas_2019_pm25,dallas_2020_pm25]
+dallas_pm25=pd.concat(frames_dallas_pm25,join='outer')
 # print("Dallas PM2.5 2010-2020")
 # print(dallaspm25)
 
 
-los_angeles_2020pm25 = citypm25(los_angeles_pm25_2020)
-los_angeles_2019pm25 = citypm25(los_angeles_pm25_2019)
-los_angeles_2018pm25 = citypm25(los_angeles_pm25_2018)
-los_angeles_2017pm25 = citypm25(los_angeles_pm25_2017)
-los_angeles_2016pm25 = citypm25(los_angeles_pm25_2016)
-los_angeles_2015pm25 = citypm25(los_angeles_pm25_2015)
-los_angeles_2014pm25 = citypm25(los_angeles_pm25_2014)
-los_angeles_2013pm25 = citypm25(los_angeles_pm25_2013)
-los_angeles_2012pm25 = citypm25(los_angeles_pm25_2012)
-los_angeles_2011pm25 = citypm25(los_angeles_pm25_2011)
-los_angeles_2010pm25 = citypm25(los_angeles_pm25_2010)
+los_angeles_2020pm25 = clean_city_pm25(los_angeles_pm25_2020)
+los_angeles_2019pm25 = clean_city_pm25(los_angeles_pm25_2019)
+los_angeles_2018pm25 = clean_city_pm25(los_angeles_pm25_2018)
+los_angeles_2017pm25 = clean_city_pm25(los_angeles_pm25_2017)
+los_angeles_2016pm25 = clean_city_pm25(los_angeles_pm25_2016)
+los_angeles_2015pm25 = clean_city_pm25(los_angeles_pm25_2015)
+los_angeles_2014pm25 = clean_city_pm25(los_angeles_pm25_2014)
+los_angeles_2013pm25 = clean_city_pm25(los_angeles_pm25_2013)
+los_angeles_2012pm25 = clean_city_pm25(los_angeles_pm25_2012)
+los_angeles_2011pm25 = clean_city_pm25(los_angeles_pm25_2011)
+los_angeles_2010pm25 = clean_city_pm25(los_angeles_pm25_2010)
 frames_los_angeles_pm25=[los_angeles_2010pm25,los_angeles_2011pm25,los_angeles_2012pm25,los_angeles_2013pm25,los_angeles_2014pm25,los_angeles_2015pm25,los_angeles_2016pm25,los_angeles_2017pm25,los_angeles_2018pm25,los_angeles_2019pm25,los_angeles_2020pm25]
 los_angelespm25=pd.concat(frames_los_angeles_pm25,join='outer')
 # print("Los Angeles PM2.5 2010-2020")
@@ -491,17 +491,17 @@ los_angelespm25=pd.concat(frames_los_angeles_pm25,join='outer')
 
 
 
-new_york_2020pm25 = citypm25(new_york_pm25_2020)
-new_york_2019pm25 = citypm25(new_york_pm25_2019)
-new_york_2018pm25 = citypm25(new_york_pm25_2018)
-new_york_2017pm25 = citypm25(new_york_pm25_2017)
-new_york_2016pm25 = citypm25(new_york_pm25_2016)
-new_york_2015pm25 = citypm25(new_york_pm25_2015)
-new_york_2014pm25 = citypm25(new_york_pm25_2014)
-new_york_2013pm25 = citypm25(new_york_pm25_2013)
-new_york_2012pm25 = citypm25(new_york_pm25_2012)
-new_york_2011pm25 = citypm25(new_york_pm25_2011)
-new_york_2010pm25 = citypm25(new_york_pm25_2010)
+new_york_2020pm25 = clean_city_pm25(new_york_pm25_2020)
+new_york_2019pm25 = clean_city_pm25(new_york_pm25_2019)
+new_york_2018pm25 = clean_city_pm25(new_york_pm25_2018)
+new_york_2017pm25 = clean_city_pm25(new_york_pm25_2017)
+new_york_2016pm25 = clean_city_pm25(new_york_pm25_2016)
+new_york_2015pm25 = clean_city_pm25(new_york_pm25_2015)
+new_york_2014pm25 = clean_city_pm25(new_york_pm25_2014)
+new_york_2013pm25 = clean_city_pm25(new_york_pm25_2013)
+new_york_2012pm25 = clean_city_pm25(new_york_pm25_2012)
+new_york_2011pm25 = clean_city_pm25(new_york_pm25_2011)
+new_york_2010pm25 = clean_city_pm25(new_york_pm25_2010)
 frames_new_york_pm25=[new_york_2010pm25,new_york_2011pm25,new_york_2012pm25,new_york_2013pm25,new_york_2014pm25,new_york_2015pm25,new_york_2016pm25,new_york_2017pm25,new_york_2018pm25,new_york_2019pm25,new_york_2020pm25]
 new_yorkpm25=pd.concat(frames_new_york_pm25,join='outer')
 # print("New York PM2.5 2010-2020")
@@ -715,9 +715,9 @@ def citymergeairpollution(pm25data, pm10data, no2data):
     cityairpollution = pd.merge(cityairpollution, no2data, how='outer', left_index=True, right_index=True)
     return cityairpollution
 
-austin_air_pollution = citymergeairpollution(austinpm25, austinpm10, austinno2)
-dallas_air_pollution = citymergeairpollution(dallaspm25, dallaspm10, dallasno2)
-houston_air_pollution = citymergeairpollution(houstonpm25, houstonpm10, houstonno2)
+austin_air_pollution = citymergeairpollution(austin_pm25, austinpm10, austinno2)
+dallas_air_pollution = citymergeairpollution(dallas_pm25, dallaspm10, dallasno2)
+houston_air_pollution = citymergeairpollution(houston_pm25, houstonpm10, houstonno2)
 los_angeles_air_pollution = citymergeairpollution(los_angelespm25, los_angelespm10, los_angelesno2)
 new_york_air_pollution = citymergeairpollution(new_yorkpm25, new_yorkpm10, new_yorkno2)
 
@@ -732,16 +732,47 @@ houston = citymergeweatherpollution(houston_weather, houston_air_pollution)
 los_angeles = citymergeweatherpollution(los_angeles_weather, los_angeles_air_pollution)
 new_york = citymergeweatherpollution(new_york_weather, new_york_air_pollution)
 
+# inner_section = (austin_weather & dallas_weather & houston_weather & los_angeles_weather & new_york_weather).toset()
+# print(inner_section)
+# list_austin_weather = list(austin_weather.columns)
+# print(list_austin_weather)
+# list_dallas_weather = list(dallas_weather.columns)
+# print(list_dallas_weather)
+# list_houston_weather = list(dallas_weather.columns)
+# print(list_houston_weather)
+# list_los_angeles_weather = list(los_angeles_weather.columns)
+# print(list_los_angeles_weather)
+# list_new_york_weather = list(new_york_weather.columns)
+# print(list_new_york_weather)
+# inner_a_d = []
+# inner_a_h = []
+# inner_a_l = []
+# inner_a_n = []
+# for x in list_austin_weather:
+#     if x in list_dallas_weather:
+#         inner_a_d.append(x)
+#     if x in list_houston_weather:
+#         inner_a_h.append(x)
+#     if x in list_los_angeles_weather:
+#         inner_a_l.append
+
+
+
+
+
+
+
 ##这后面的注释就不用看了，一些小草稿，我要是还要改的话还需要用到一下，所以暂时不删,以上城市名字是对应的城市的数据（其中包括天气数据和污染数据）我将天气数据和污染数据一一整合了，所以目前只有城市是分开的,共五个dataframe
 
 
-# austin['CITY'] = 'AUSTIN'
-# dallas['CITY'] = 'DALLAS'
-# houston['CITY'] = 'HOUSTON'
-# los_angeles['CITY'] = 'LOS_ANGELES'
-# new_york['CITY'] = 'NEW_YORK'
-# city_frame = [austin, dallas, houston, los_angeles, new_york]
-# data_five_cities = pd.concat(city_frame,join='outer')
+austin['CITY'] = 'AUSTIN'
+dallas['CITY'] = 'DALLAS'
+houston['CITY'] = 'HOUSTON'
+los_angeles['CITY'] = 'LOS_ANGELES'
+new_york['CITY'] = 'NEW_YORK'
+city_frame = [austin, dallas, houston, los_angeles, new_york]
+data_five_cities = pd.concat(city_frame, axis = 0, join='inner')
+print(data_five_cities)
 # print("laji")
 # print(data_five_cities.info())
 # print(data_five_cities.iloc[-1])
