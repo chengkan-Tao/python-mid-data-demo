@@ -190,6 +190,8 @@ IN_PATH_NEW_YORK_NO2_2012 = os.path.join('air_pollution','new_york','no2','ny_20
 IN_PATH_NEW_YORK_NO2_2011 = os.path.join('air_pollution','new_york','no2','ny_2011_no2.csv')
 IN_PATH_NEW_YORK_NO2_2010 = os.path.join('air_pollution','new_york','no2','ny_2010_no2.csv')
 
+
+
 #put all air pollution read csv here
 austin_pm25_2020 = pd.read_csv(IN_PATH_AUSTIN_PM25_2020)
 austin_pm25_2019 = pd.read_csv(IN_PATH_AUSTIN_PM25_2019)
@@ -389,7 +391,7 @@ def clean_weather_data_city(IN_PATH):
     city_weather_data.set_index(pd.DatetimeIndex(city_weather_data['DATE']),inplace=True)   
     city_weather_data.drop(['DATE','STATION','NAME'],axis=1,inplace=True)
     #city_weather_data.columns[14:]=city_weather_data.columns[14:].fillna(0，inplace = True)
-    city_weather_data.iloc[:,14:].fillna(0, inplace = True)
+    city_weather_data.iloc[:,13:] = city_weather_data.iloc[:,13:].fillna(value = 0)
     return city_weather_data
 
 #read from url
@@ -732,6 +734,13 @@ houston = citymergeweatherpollution(houston_weather, houston_air_pollution)
 los_angeles = citymergeweatherpollution(los_angeles_weather, los_angeles_air_pollution)
 new_york = citymergeweatherpollution(new_york_weather, new_york_air_pollution)
 
+print(austin.info())
+
+
+
+
+
+
 # inner_section = (austin_weather & dallas_weather & houston_weather & los_angeles_weather & new_york_weather).toset()
 # print(inner_section)
 # list_austin_weather = list(austin_weather.columns)
@@ -772,7 +781,7 @@ los_angeles['CITY'] = 'LOS_ANGELES'
 new_york['CITY'] = 'NEW_YORK'
 city_frame = [austin, dallas, houston, los_angeles, new_york]
 data_five_cities = pd.concat(city_frame, axis = 0, join='inner')
-print(data_five_cities)
+# print(data_five_cities)
 # print("laji")
 # print(data_five_cities.info())
 # print(data_five_cities.iloc[-1])
@@ -808,3 +817,27 @@ print(data_five_cities)
 # means = austin_2020_merge.mean(axis=1,skipna=True)
 # print(means)
 
+
+
+# def clean_weather_by_month(IN_PATH):
+#     city_weather_data = (pd.read_csv(IN_PATH))
+#     city_weather_data.set_index(pd.DatetimeIndex(city_weather_data['DATE']),inplace=True)   
+#     city_weather_data.drop(['STATION','NAME'],axis=1,inplace=True)
+#     city_weather_data['year'] = pd.DatetimeIndex(city_weather_data['DATE']).year
+#     #city_weather_data['year'] = pd['ArrivalDate'].dt.year
+#     city_weather_data['month'] = pd.DatetimeIndex(city_weather_data['DATE']).month
+
+#     #city_weather_data.columns[14:]=city_weather_data.columns[14:].fillna(0，inplace = True)
+#     city_weather_data.iloc[:,14:].fillna(0, inplace = True)
+#     return city_weather_data
+
+# def clean_air_pollution_by_month(IN_PATH):
+#     city_air_pollution_data = 
+
+# import statsmodels.formula.api as sm
+# austin['log_PRCP'] = np.log(austin['PRCP'])
+# austin['log_AWND'] = np.log(austin['AWND'])
+# results = sm.ols('Q("Daily Mean PM2.5 Concentration") ~ log_PRCP + log_AWND',data = austin, missing = 'drop').fit()
+# #results.summary()
+print(austin)
+print(austin['WT01'])
